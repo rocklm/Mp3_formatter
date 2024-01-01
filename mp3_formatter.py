@@ -7,7 +7,7 @@ Purpose:
 Ensure Artist and titles of a song are in the correct field
 
 Notes:
-(1) song neame format  "<artists> Feat. <featured artists> - song title>"
+(1) song name format  "<artists> Feat. <featured artists> - song title>"
 
 ===================================================================
 '''
@@ -17,7 +17,6 @@ from logging import getLogger
 import os
 import eyed3
 import re
-import time
 
 #supress CRC error from eyed3
 getLogger().setLevel('ERROR')
@@ -48,7 +47,7 @@ def format_song(song_string):
     split_string = song_string.split('-')
     
     if len(split_string) < 2:
-        song.tag.title = song_string
+        song.tag.title = song_string.replace('.mp3', '')
        
     else: 
         song.tag.album_artist = split_string[0]
