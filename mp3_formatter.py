@@ -7,7 +7,7 @@ Purpose:
 Ensure Artist and titles of a song are in the correct field
 
 Notes:
-(1) format of song string should be "<song title>" - "<artists>"
+(1) song neame format  "<artists> Feat. <featured artists> - song title>"
 
 ===================================================================
 '''
@@ -24,8 +24,6 @@ getLogger().setLevel('ERROR')
 
 #set music foled location
 music_folder = 'C:\Entertainment\Music'
-
-#song names
 
 
 #'featuring' has a consistent naming convention
@@ -46,22 +44,25 @@ def feat_word_change():
 #split title from artist and assign each to relevant field
 def format_song(song_string):
     
+    song = eyed3.load(music_folder + '\\' + song_string)
     split_string = song_string.split('-')
+    
     if len(split_string) < 2:
-        #song.tag.title = song_string.replace('.mp3', '')
-        #song.tag.save() 
-        pass
-    else:
-        song = eyed3.load(music_folder + '\\' + song_string)
+        song.tag.title = song_string
+       
+    else: 
         song.tag.album_artist = split_string[0]
         song.tag.title = split_string[1].replace('.mp3', '')
-        song.tag.save() 
+        
+    song.tag.save() 
+
 
 #clean each song in file
 def clean_songs():
     files = os.listdir(music_folder)
     for song_name in files:
         format_song(song_name)
+
 
 #call clean
 if __name__ == '__main__':
