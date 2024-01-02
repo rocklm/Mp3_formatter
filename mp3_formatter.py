@@ -24,6 +24,14 @@ getLogger().setLevel('ERROR')
 #set music foled location
 music_folder = 'C:\Entertainment\Music'
 
+#extract 
+def find_string(pattern, string):
+    try:
+        txt = re.search(pattern, string).group(1)
+    except:
+        txt = ''
+    return txt
+
 
 #'featuring' has a consistent naming convention
 def feat_word_change():
@@ -44,15 +52,24 @@ def feat_word_change():
 def format_song(song_string):
     
     song = eyed3.load(music_folder + '\\' + song_string)
-    split_string = song_string.split('-')
-    
-    if len(split_string) < 2:
+   
+    #use original song title if no '-' which seperates the artist and title
+    if '-' not in  song_string:
         song.tag.title = song_string.replace('.mp3', '')
-       
-    else: 
-        song.tag.album_artist = split_string[0]
-        song.tag.title = split_string[1].replace('.mp3', '')
-        
+    else:
+       song.tag.title = find_string('\-(.*)', song_string).replace('.mp3', '')
+     
+    #use appropriate regex if song has featuring artists
+    if 'Feat.' in song_string:
+        main_artist_regex = '(.*)Feat\.'
+    else:
+        main_artist_regex = '(.*)\-' 
+             
+    song.tag.album_artist = find_string(main_artist_regex, song_string)
+    song.tag.original_artist = find_string(main_artist_regex, song_string)
+    #contributing artist
+    song.tag.artist = find_string('Feat\.(.+?)\-', song_string)
+  
     song.tag.save() 
 
 
@@ -67,7 +84,3 @@ def clean_songs():
 if __name__ == '__main__':
     feat_word_change() 
     clean_songs()
-    
-
-
-
