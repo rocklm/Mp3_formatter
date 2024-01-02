@@ -24,7 +24,7 @@ getLogger().setLevel('ERROR')
 #set music foled location
 music_folder = 'C:\Entertainment\Music'
 
-#extract 
+#extract text based on regex pattern
 def find_string(pattern, string):
     try:
         txt = re.search(pattern, string).group(1)
